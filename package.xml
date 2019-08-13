@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<package>
+    <name>Andreani</name>
+    <version>0.1.10</version>
+    <stability>stable</stability>
+    <license uri="http://www.opensource.org/licenses/gpl-license.php">GNU General Public License (GPL)</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>This extension allows you to connect your Magento store to the most important logistics service in Argentina.</summary>
+    <description>Features&#xD;
+For merchants:&#xD;
+	Set user and password for eAndreani&#xD;
+	Set specific contract cost for every shipping service (standard, to branch, fast shipping).&#xD;
+	Enable/Disable each shipping service.&#xD;
+	Custom title and description for each shipping service&#xD;
+	Configure weight/volume for products attribute (g/cm3 or kg/m3).&#xD;
+	Full documentation with step by step installation.&#xD;
+	Google Maps integrated for geolocate cusomers.&#xD;
+	Include price's variables according price, weight, volume, and distance of shipping.&#xD;
+&#xD;
+For Customers:&#xD;
+	Calculator of shipping cost.&#xD;
+	Geolocation from shipping address details.&#xD;
+	Location and distance  y distance to the nearest branch for "Shipments to branch".&#xD;
+	Express delivery service.&#xD;
+	Tracking of shipments.</description>
+    <notes>Release Version 0.1.10&#xD;
+&#xD;
+Fix:&#xD;
+- Cotizador ampliado hasta 50kg.&#xD;
+&#xD;
+- Send tracking information no vuelve a llamar a ConfirmarCompra si la orden ya tiene un n&#xFA;mero de env&#xED;o.&#xD;
+&#xD;
+- Orden de Andreani -&gt; Estado de pedidos es por ID Orden descendente.&#xD;
+&#xD;
+- Versi&#xF3;n PHP hasta 5.5.15.&#xD;
+&#xD;
+- El contrato pas&#xF3; a ser varchar(255).&#xD;
+&#xD;
+- Se pasaron los archivos de "local" a "community" </notes>
+    <authors><author><name>Gaspar Mac</name><user>ecloudsolutions</user><email>gaspar@ecloudsolutions.com</email></author><author><name>Nicolas Demayo</name><user>nikete</user><email>nicolas.demayo@ecloudsolutions.com</email></author><author><name>Franco Sabolo</name><user>kako_ecloud</user><email>franco.sabolo@ecloudsolutions.com</email></author><author><name>Mariano Botti</name><user>mbotti89</user><email>mariano.botti@ecloudsolutions.com</email></author></authors>
+    <date>2014-08-04</date>
+    <time>19:57:35</time>
+    <contents><target name="magecommunity"><dir name="Ecloud"><dir name="Andreani"><dir name="Block"><dir name="Adminhtml"><dir name="Config"><file name="Edit.php" hash="dff7e47f8890a0472a70557324c0b6b5"/><dir name="Form"><dir name="Field"><file name="Medida.php" hash="14891f54e3227d7346d9366390dee353"/></dir></dir></dir><dir name="Pedidos"><dir name="Edit"><file name="Form.php" hash="6d340eb5f24f9b5f3736917dbf3a77ec"/><dir name="Renderer"><file name="Button.php" hash="8080c62dd85520205aaf3a551a80647e"/></dir></dir><file name="Edit.php" hash="30212eb7939a12d937152e08f980ab64"/><file name="Grid.php" hash="3b2a519b42de33cfe673e508a759166e"/></dir><file name="Pedidos.php" hash="c5f9058d4b288696e721be500b25612d"/></dir><file name="Andreani.php" hash="8ba6082dfc04617177495bfea4bed381"/></dir><dir name="Helper"><file name="Data.php" hash="36f44a54652157203b49a91c45fa4560"/></dir><dir name="Model"><file name="Andreani.php" hash="a6037a578d62fa6ff0cd8630c11e676b"/><dir name="Carrier"><file name="Andreani.php" hash="e46e516b4242092b90803e3eef58f9fa"/><file name="Andreaniestandar.php" hash="bf4eaab3a133a01218043e2a6344859f"/><file name="Andreanisucursal.php" hash="751ffe7905199495a6a186fc3c39751c"/><file name="Andreaniurgente.php" hash="46a113d743e87a63bddb67dc6714d705"/></dir><dir name="Config"><file name="Medida.php" hash="8e09d61b3b6a6469a9e67a900c1f43c7"/><file name="TestMode.php" hash="aa0ed7043c6361f064240aeefa27d8ec"/></dir><file name="Observer.php" hash="e94e8099da3cd20a1ba5f355f47c9676"/><file name="Order.php" hash="462a8fee2bf5a25465bcd1f0a6a48f35"/><dir name="Resource"><dir name="Order"><file name="Collection.php" hash="b7fcefacf48e7934c1ccdf085f100cf4"/></dir><file name="Order.php" hash="630b4416bfa3590c5e9704b3fe38c307"/></dir></dir><dir name="controllers"><dir name="Adminhtml"><dir name="Pedidos"><file name="PedidosController.php" hash="6ad5521b707b5cf2af75dea017e759fd"/></dir><file name="PedidosController.php" hash="73fa3b7e309ffaaefb28a0b2087c12e0"/></dir></dir><dir name="etc"><file name="adminhtml.xml" hash="572688a74a8eb634953c6bf59d2635f2"/><file name="config.xml" hash="6c028ee48dbd118e172cb7a8dc90fdd8"/><file name="system.xml" hash="ec1bf9a3739d671995cea0afb9289725"/></dir><dir name="sql"><dir name="andreani_setup"><file name="mysql4-install-0.1.0.php" hash="23b5ff1bb77faa3394279983279ef508"/><file name="mysql4-install-0.1.1.php" hash="af9c6884b1ef1e106f598e84d5ac97d5"/><file name="mysql4-upgrade-0.1.1-0.1.2.php" hash="19bbe941b87c48a7c976099f26b6df87"/><file name="mysql4-upgrade-0.1.2-0.1.3.php" hash="31485210af28297146e193090d0ae586"/><file name="mysql4-upgrade-0.1.3-0.1.4.php" hash="19bbe941b87c48a7c976099f26b6df87"/><file name="mysql4-upgrade-0.1.4-0.1.5.php" hash="19bbe941b87c48a7c976099f26b6df87"/><file name="mysql4-upgrade-0.1.5-0.1.6.php" hash="2e5071273633e63d487fa573dc2a33d9"/><file name="mysql4-upgrade-0.1.6-0.1.7.php" hash="2e5071273633e63d487fa573dc2a33d9"/><file name="mysql4-upgrade-0.1.9-0.1.10.php" hash="785667de6dde9f943af7a11ef410e00d"/></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="Ecloud_Andreani.xml" hash="f328f654fd1a6505fc94a0f0bb4175bc"/></dir></target><target name="magelib"><dir name="Andreani"><file name="wsseAuth.php" hash="7f7c0dcac241e7422a6bc657638fc5df"/></dir></target><target name="magedesign"><dir name="frontend"><dir name="default"><dir name="default"><dir name="template"><dir name="checkout"><dir name="onepage"><file name="shipping.phtml" hash="dd07d8ad6a22cd9e2553109498057439"/></dir></dir><dir name="customer"><dir name="address"><file name="edit.phtml" hash="c6a693c55bec274da69b12839a5f4ef1"/></dir></dir><dir name="persistent"><dir name="checkout"><dir name="onepage"><file name="billing.phtml" hash="c4c0a62c21e9e1a6d2b1b872d0f8bdfc"/></dir></dir></dir><dir name="shipping"><dir name="tracking"><file name="popup.phtml" hash="cab9a1b01c732d7553be9b47e1e1b542"/></dir></dir></dir></dir></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.2.0</min><max>5.5.15</max></php><extension><name>Core</name><min></min><max></max></extension><extension><name>soap</name><min></min><max></max></extension></required></dependencies>
+</package>
