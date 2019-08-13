@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   0.1.7 03.07.2014
+ * @version   0.1.8 04.07.2014
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
@@ -139,7 +139,7 @@ class Ecloud_Andreani_Model_Observer extends Mage_Core_Model_Session_Abstract {
 						'SucursalRetiro' 		=> $datos["sucursal_retiro"],
 						'Tarifa' 				=> $datos["precio"],
 						'TipoDocumento' 		=> "DNI",
-						'ValorACobrar' 			=> $datos["precio"], // Si es contrarembolso deberiamos sumar el "ValorDeclarado"
+						'ValorACobrar' 			=> "", // Si es contrarembolso deberiamos sumar el "ValorDeclarado" -- $datos["precio"]
 						'ValorDeclarado' 		=> $datos["valor_declarado"],
 						'Volumen' 				=> $datos["volumen"]
 					)));
@@ -168,11 +168,9 @@ class Ecloud_Andreani_Model_Observer extends Mage_Core_Model_Session_Abstract {
 			Mage::getModel('andreani/order')->load($id)->setData('estado','Enviado')->save();
 			Mage::getModel('andreani/order')->load($id)->setData('constancia',$ConstanciaURL)->save();
 
-
 		} catch (SoapFault $e) {
 			Mage::log("Error: " . $e);
 		}
-
 
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   0.1.7 03.07.2014
+ * @version   0.1.8 04.07.2014
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
@@ -65,12 +65,12 @@ class Ecloud_Andreani_Helper_Data extends Mage_Core_Helper_Abstract
 				}
 
 				$estadoenvio = array(
-						"Nropieza" 					=> 		$request->Pieza->NroPieza,
-						"NombreEnvio" 				=> 		$request->Pieza->Envios->Envio->NombreEnvio,
-						"Codigotracking" 			=> 		$request->Pieza->Envios->Envio->NroAndreani,
-						"FechAlta"					=>		$request->Pieza->Envios->Envio->FechaAlta,
-						"Eventos" 					=> 		$eventos
-					);
+					"Nropieza" 					=> 		$request->Pieza->NroPieza,
+					"NombreEnvio" 				=> 		$request->Pieza->Envios->Envio->NombreEnvio,
+					"Codigotracking" 			=> 		$request->Pieza->Envios->Envio->NroAndreani,
+					"FechAlta"					=>		$request->Pieza->Envios->Envio->FechaAlta,
+					"Eventos" 					=> 		$eventos
+				);
 
 				return $estadoenvio;
 			
@@ -80,12 +80,22 @@ class Ecloud_Andreani_Helper_Data extends Mage_Core_Helper_Abstract
 
 		}
 
+		public function getWeight() {
+			$peso 	= 11;
+			$medida = 1000;
+
+	        $cart = Mage::getModel('checkout/cart')->getQuote();
+	        foreach ($cart->getAllItems() as $item) {
+	            $datos["cantidad"][] 	= $item->getProduct()->getQty();
+	            $datos["peso"][] 		= $item->getProduct()->getWeight();
+	            $datos["name"][]		= $item->getProduct()->getName();
+
+	            $datos["total"]		 = ($item->getProduct()->getQty() * $item->getProduct()->getWeight() * $medida) + $datos["total"];
+
+	        }
+
+			return $datos;
+		}
+
 }
 ?>
-
-
-
-
-
-	
-	 

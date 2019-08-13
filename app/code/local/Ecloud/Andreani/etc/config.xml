@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Ecloud_Andreani>
-			<version>0.1.7</version>
+			<version>0.1.8</version>
 		</Ecloud_Andreani>
 	</modules>
 	<global>
@@ -156,14 +156,18 @@
 	</adminhtml>
    	<default>
         <carriers>
+            <andreaniconfig>
+                <cache>0</cache>
+                <medida>kilos</medida>
+            </andreaniconfig>
             <andreaniestandar>
                 <active>0</active>
                 <model>andreani/carrier_andreaniestandar</model>
                 <name>andreani</name>
                 <title>Andreani Estandar</title>
                 <description><![CDATA[Recibí el pedido en tu casa.]]></description>
-                <sort_order>0</sort_order>
-                <medida>kilos</medida>
+                <sort_order>10</sort_order>
+                <regla>0</regla>
             </andreaniestandar>
             <andreaniurgente>
                 <active>0</active>
@@ -171,8 +175,8 @@
                 <name>andreaniurgente</name>
                 <title>Andreani Urgente</title>
                 <description><![CDATA[Recibí el pedido en tu casa en 24 hs!]]></description>
-                <sort_order>10</sort_order>
-                <medida>kilos</medida>
+                <sort_order>20</sort_order>
+                <regla>0</regla>
             </andreaniurgente>
             <andreanisucursal>
                 <active>0</active>
@@ -180,8 +184,8 @@
                 <name>andreanisucursal</name>
                 <title>Andreani Sucursal</title>
                 <description><![CDATA[Busca el pedido en la sucursal más cercana: ]]></description>
-                <sort_order>10</sort_order>
-                <medida>kilos</medida>
+                <sort_order>30</sort_order>
+                <regla>0</regla>
             </andreanisucursal>
         </carriers>
     </default>
