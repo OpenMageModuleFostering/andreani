@@ -5,7 +5,7 @@
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
 ?><?php
-class Ecloud_Andreani_Model_Config_Medida
+class Ecloud_Andreani_Model_Config_Metodo
 {
 
    /**
@@ -16,8 +16,9 @@ class Ecloud_Andreani_Model_Config_Medida
     public function toOptionArray()
     {
         return array(
-            array('value' => 'gramos', 'label'=>Mage::helper('adminhtml')->__('gramos / cm3')),
-            array('value' => 'kilos', 'label'=>Mage::helper('adminhtml')->__('kg / m3')),
+            array('value' => 'basico', 'label'=>Mage::helper('adminhtml')->__('Básico')),
+            array('value' => 'medio', 'label'=>Mage::helper('adminhtml')->__('Medio')),
+            array('value' => 'completo', 'label'=>Mage::helper('adminhtml')->__('Completo')),
         );
     }
 
@@ -29,8 +30,9 @@ class Ecloud_Andreani_Model_Config_Medida
     public function toArray()
     {
         return array(
-            'gramos' => Mage::helper('adminhtml')->__('gramos / cm3'),
-            'kilos' => Mage::helper('adminhtml')->__('kg / m3'),
+            'basico' => Mage::helper('adminhtml')->__('Básico'),
+            'medio' => Mage::helper('adminhtml')->__('Medio'),
+            'completo' => Mage::helper('adminhtml')->__('Completo'),
         );
     }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   0.1.10 04.08.2014
+ * @version   0.1.11 09.10.2014
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
@@ -19,14 +19,33 @@ class Ecloud_Andreani_Model_Observer extends Mage_Core_Model_Session_Abstract {
 	public function andreaniObserver($observer) {
 		try {
 			// 1. Tomamos todos los datos de la orden
-			$datos 		= Mage::getSingleton('core/session')->getAndreani();
+			//fix. seteamos el contrato correcto
+			$metodoenvio = $observer->getEvent()->getOrder()->getShippingMethod();
+			if($metodoenvio == 'andreaniestandar_andreaniestandar'){
+				$datos 		= Mage::getSingleton('core/session')->getAndreaniEstandar();
+			}
+			if($metodoenvio == 'andreaniurgente_andreaniurgente'){
+				$datos 		= Mage::getSingleton('core/session')->getAndreaniUrgente();
+			}
+			if($metodoenvio == 'andreanisucursal_andreanisucursal'){
+				$datos 		= Mage::getSingleton('core/session')->getAndreaniSucursal();
+			}
 
-Mage::log("Datos observer" . print_r($datos,true));
-			// 2. Buscamos el ID de la orden 
+
+			// fix. setteamos datos de ship porque si la orden viene de admin, vienen vacios
+			$ship = $observer->getEvent()->getOrder()->getShippingAddress();
+			$datos["nombre"] = $ship->getFirstname();
+			$datos["apellido"] = $ship->getLastname();
+			$datos["telefono"] = $ship->getTelephone();
+
+			// 2. Buscamos el ID de la orden y increment id
 			$OrderId = $observer->getEvent()->getOrder()->getId();
+			$OrderIncId = $observer->getEvent()->getOrder()->getIncrementId();
+
 			// 3. Los almacenamos en la tabla "andreani_order"
 			$_dataSave = (array(
 						'id_orden' 		=> intval($OrderId),
+						'order_increment_id' => intval($OrderIncId),
 			            'contrato' 		=> $datos["contrato"],
 			            'cliente'		=> $datos["cliente"],
 			            'direccion' 	=> $datos["direccion"],
@@ -139,7 +158,7 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 						'NumeroCelular' 		=> $datos["telefono"],
 						'NumeroDocumento' 		=> $datos["dni"],
 						'NumeroTelefono' 		=> $datos["telefono"],
-						'NumeroTransaccion' 	=> "Transacción nro: " . $datos["id_orden"],
+						'NumeroTransaccion' 	=> "Orden nro: " . $datos["order_increment_id"],
 						'Peso' 					=> $datos["peso"],
 						'Piso' 					=> NULL,
 						'Provincia' 			=> $datos["provincia"],
@@ -159,7 +178,7 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 			    ->setCarrierCode('andreani') //carrier code
 			    ->setTitle('Andreani');
 			$shipment->addTrack($track);
-
+			
 			//Enviamos numero Andreani, nos devolvera el url de la constancia que lo almacenaremos en la tabla andreani_order.
 			$NroAndreani = $phpresponse->ConfirmarCompraResult->NumeroAndreani;
 			$constanciaResponse = $client->ImprimirConstancia(array(
@@ -180,6 +199,21 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 			Mage::log("Error: " . $e);
 		}
 
+	}
+
+	/**
+	* NOTA: Despues de guardar el shippment, enviamos el mail al comprador con su tracking code
+	*/
+	public function salesOrderShipmentSaveAfter($observer) {
+		$shipment 	= $observer->getEvent()->getShipment();
+		// enviamos el mail con el tracking code
+		if($shipment){
+			if(!$shipment->getEmailSent()){
+				$shipment->sendEmail(true);
+				$shipment->setEmailSent(true);
+				$shipment->save();
+			}
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version   0.1.10 04.08.2014
+ * @version   0.1.11 09.10.2014
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
@@ -42,6 +42,14 @@ class Ecloud_Andreani_Block_Adminhtml_Pedidos_Grid extends Mage_Adminhtml_Block_
             'sortable' => true,
             'width' => '2%',
             'index' => 'id_orden',
+            'type'  => 'text'
+        ));
+
+        $this->addColumn('order_increment_id', array(
+            'header' => Mage::helper('andreani')->__('# Pedido'),
+            'sortable' => true,
+            'width' => '5',
+            'index' => 'order_increment_id',
             'type'  => 'text'
         ));
 
@@ -115,13 +123,27 @@ class Ecloud_Andreani_Block_Adminhtml_Pedidos_Grid extends Mage_Adminhtml_Block_
 			'renderer'  => 'andreani/adminhtml_Pedidos_Edit_Renderer_button'
         ));
 
+        $this->addColumn('entrega', array(
+            'header' => Mage::helper('andreani')->__('Fecha de entrega'),
+            'sortable' => true,
+            'width' => '5',
+            'index' => 'entrega',
+            'type'  => 'text'
+        ));
+
         $this->addColumn('estado', array(
             'header'    => Mage::helper('andreani')->__('Estado'),
             'sortable'  => false,
             'width'     => '5',
             'index'     => 'estado',
-            'type'      => 'text',
-            
+            'type'      => 'options',
+            'sortable'  => false,
+            'options'   => array(
+                'Enviado'   => 'Enviado',
+                'Eliminar'  => 'Eliminar',
+                'Entregado' => 'Entregado',
+                'Pendiente' => 'Pendiente'
+            )
         ));
  
         return parent::_prepareColumns();

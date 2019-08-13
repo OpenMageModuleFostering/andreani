@@ -4,11 +4,8 @@
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
  * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
  */
-?>
-
-<?php
-
-class Ecloud_Andreani_Model_Config_TestMode
+?><?php
+class Ecloud_Andreani_Model_Config_Pesomax
 {
 
    /**
@@ -19,8 +16,9 @@ class Ecloud_Andreani_Model_Config_TestMode
     public function toOptionArray()
     {
         return array(
-            array('value' => '1', 'label'=>Mage::helper('adminhtml')->__('Habilitado')),
-            array('value' => '0', 'label'=>Mage::helper('adminhtml')->__('Deshabilitado')),
+            array('value' => '30000', 'label'=>Mage::helper('adminhtml')->__('30 Kg')),
+            array('value' => '50000', 'label'=>Mage::helper('adminhtml')->__('50 Kg')),
+            array('value' => '100000', 'label'=>Mage::helper('adminhtml')->__('100 Kg')),
         );
     }
 
@@ -32,8 +30,9 @@ class Ecloud_Andreani_Model_Config_TestMode
     public function toArray()
     {
         return array(
-            '1' => Mage::helper('adminhtml')->__('Habilitado'),
-            '0' => Mage::helper('adminhtml')->__('Deshabilitado'),
+            '30000' => Mage::helper('adminhtml')->__('30 Kg'),
+            '50000' => Mage::helper('adminhtml')->__('50 Kg'),
+            '100000' => Mage::helper('adminhtml')->__('100 Kg'),
         );
     }
 
