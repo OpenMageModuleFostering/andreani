@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   0.1.11 09.10.2014
+ * @version   0.1.12 19.03.2015
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
- * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
+ * @copyright Copyright (C) 2010 - 2015 ecloud solutions ®
  */
 ?><?php require_once Mage::getBaseDir('lib') . '/Andreani/wsseAuth.php';
     class Ecloud_Andreani_Model_Carrier_Andreani extends Mage_Shipping_Model_Carrier_Abstract implements Mage_Shipping_Model_Carrier_Interface {  
@@ -54,7 +54,7 @@
             foreach ($request->getAllItems() as $_item) {
                 if($sku != $_item->getSku()) {
                     $sku                     = $_item->getSku();
-		    $price		     = floor($_item->getPrice());
+            $price           = floor($_item->getPrice());
                     $datos["peso"]           = ($_item->getQty() * $_item->getWeight() * $datos["medida"]) + $datos["peso"];
                     $datos["valorDeclarado"] = ($_item->getQty() * $price) + $datos["valorDeclarado"];
                     
@@ -114,7 +114,7 @@
             $error_msg = Mage::helper('andreani')->__("Su pedido supera el peso máximo permitido por Andreani. Por favor divida su orden en más pedidos o consulte al administrador de la tienda. Gracias y disculpe las molestias.");
 
             if ($this->_code == "andreaniestandar" & Mage::getStoreConfig('carriers/andreaniestandar/active',Mage::app()->getStore()) == 1) {
-                if($datos["volumen"] >= $pesoMaximo){
+                if($datos["peso"] >= $pesoMaximo){
                     $error = Mage::getModel('shipping/rate_result_error'); 
                     $error->setCarrier($this->_code); 
                     $error->setCarrierTitle($this->getConfigData('title')); 
@@ -134,7 +134,7 @@
                 }
             }
             if ($this->_code == "andreaniurgente" & Mage::getStoreConfig('carriers/andreaniurgente/active',Mage::app()->getStore()) == 1) {
-                if($datos["volumen"] >= $pesoMaximo){
+                if($datos["peso"] >= $pesoMaximo){
                     $error = Mage::getModel('shipping/rate_result_error'); 
                     $error->setCarrier($this->_code); 
                     $error->setCarrierTitle($this->getConfigData('title')); 
@@ -154,7 +154,7 @@
                 }
             }
             if ($this->_code == "andreanisucursal" & Mage::getStoreConfig('carriers/andreanisucursal/active',Mage::app()->getStore()) == 1) {
-                if($datos["volumen"] >= $pesoMaximo){
+                if($datos["peso"] >= $pesoMaximo){
                     $error = Mage::getModel('shipping/rate_result_error'); 
                     $error->setCarrier($this->_code); 
                     $error->setCarrierTitle($this->getConfigData('title')); 
@@ -320,16 +320,18 @@
 
             if($sucursales=="nosucursal"){
                 return "No hay sucursales cerca de tu domicilio.";
-            }           
+            }elseif ($sucursales->Sucursal == 0) {
+                return "Lo siento ha fallado la comunicación con Andreani, por favor vuelve a intentarlo.";
+            }          
 
-            $datos["sucursalRetiro"]= $sucursales->Sucursal;
+            $datos["sucursalRetiro"]        = $sucursales->Sucursal;
             $datos["DireccionSucursal"]     = $sucursales->Direccion;
 
             // Buscamos en eAndreani el costo del envio segun los parametros enviados
             $datos["precio"]                = $this->cotizarEnvio($datos);
 
             if ($datos["precio"] == 0) {
-            	return $texto  = Mage::helper('andreani')->__("Error en la conexión con Andreani. Por favor chequee los datos ingresados en la información de envio y vuelva a intentar.");
+                return $texto  = Mage::helper('andreani')->__("Error en la conexión con Andreani. Por favor chequee los datos ingresados en la información de envio y vuelva a intentar.");
             } else {
                 if($metodo != 'basico'){
                     $texto  = Mage::getStoreConfig('carriers/andreanisucursal/description',Mage::app()->getStore()) . " {$sucursales->Descripcion} ({$sucursales->Direccion}). Estas a {$this->distancia_final_txt} {$this->mode} ({$this->duracion_final}).";
@@ -348,7 +350,8 @@
             if($request->getFreeShipping() == true || $request->getPackageQty() == $this->getFreeBoxes()) {
                 $shippingPrice = '0.00';
                 // cambiamos el titulo para indicar que el envio es gratis
-                $rate->setMethodTitle(Mage::helper('andreani')->__('Envío gratis.'));
+                $direSucu  = " Sucursal: {$sucursales->Descripcion} ({$sucursales->Direccion}).";
+                $rate->setMethodTitle(Mage::helper('andreani')->__('Envío gratis.') . $direSucu);
             } else { 
                 $shippingPrice = $this->getFinalPriceWithHandlingFee($datos["precio"]);
             }
@@ -389,6 +392,9 @@
                 $wsse_header = new WsseAuthHeader($params["username"], $params["password"]);
                 $client = new SoapClient($params["urlCotizar"], $options);
                 $client->__setSoapHeaders(array($wsse_header));
+
+                $sucursalRetiro     = array('sucursalRetiro' => "");
+                $params = array_merge($sucursalRetiro, $params);
                 
                 $phpresponse = $client->CotizarEnvio(array(
                     'cotizacionEnvio' =>array(

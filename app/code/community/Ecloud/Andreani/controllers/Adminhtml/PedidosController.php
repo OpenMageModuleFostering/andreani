@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   0.1.11 09.10.2014
+ * @version   0.1.12 19.03.2015
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
- * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
+ * @copyright Copyright (C) 2010 - 2015 ecloud solutions ®
  */
 ?><?php require_once Mage::getBaseDir('lib') . '/Andreani/wsseAuth.php';
 class Ecloud_Andreani_Adminhtml_PedidosController extends Mage_Adminhtml_Controller_Action
@@ -196,6 +196,59 @@ class Ecloud_Andreani_Adminhtml_PedidosController extends Mage_Adminhtml_Control
 		}
 			
         $this->_redirect('*/*/');
+	}
+
+	public function getConstanciaAction() {
+
+		$id = $this->getRequest()->getParam('id');
+        $order = Mage::getModel('andreani/order')->load($id);
+
+        $datos = $order->getData();
+
+		if (Mage::getStoreConfig('carriers/andreaniconfig/testmode',Mage::app()->getStore()) == 1) {
+                $datos["urlConfirmar"]  = "https://www.e-andreani.com/CASAStaging/eCommerce/ImposicionRemota.svc?wsdl";
+        } else {
+                $datos["urlConfirmar"]	= "https://www.e-andreani.com/CASAWS/eCommerce/ImposicionRemota.svc?wsdl";
+        }
+
+		$datos["username"] = Mage::getStoreConfig('carriers/andreaniconfig/usuario',Mage::app()->getStore());
+		$datos["password"] = Mage::getStoreConfig('carriers/andreaniconfig/password',Mage::app()->getStore());
+
+
+		if ($datos["username"] == "" OR $datos["password"] == "") {
+			Mage::log("Andreani :: no existe nombre de usuario o contraseña para eAndreani");
+			die('Andreani :: no existe nombre de usuario o contraseña para eAndreani');
+		}
+
+		// 2. Conectarse a eAndreani
+		try {
+			$options = array(
+				'soap_version'		=> SOAP_1_2,
+				'exceptions' 		=> true,
+				'trace' 			=> 1,
+				'wdsl_local_copy'	=> true
+			);
+			$wsse_header    = new WsseAuthHeader($datos["username"], $datos["password"]);
+            $client         = new SoapClient($datos["urlConfirmar"], $options);
+            $client->__setSoapHeaders(array($wsse_header));
+
+            $constanciaResponse = $client->ImprimirConstancia(array(
+					'entities' =>array(
+								'ParamImprimirConstancia' =>array(
+										'NumeroAndreani' => $datos['cod_tracking']
+									))));
+			$ConstanciaURL = $constanciaResponse->ImprimirConstanciaResult->ResultadoImprimirConstancia->PdfLinkFile;
+
+			$this->_redirectUrl($ConstanciaURL);
+
+			Mage::getModel('andreani/order')->load($id)->setData('constancia',$ConstanciaURL)->save();
+
+		} catch (SoapFault $e) {
+			Mage::log("Error: " . $e);
+			Mage::getSingleton('adminhtml/session')->addError('Error Andreani: '.$e->getMessage().' - Por favor vuelva a intentar en unos minutos.');
+			$this->_redirect('*/*/index');			
+		}
+
 	}
 
 }

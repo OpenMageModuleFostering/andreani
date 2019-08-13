@@ -1,8 +1,8 @@
 <?php
 /**
- * @version   0.1.11 09.10.2014
+ * @version   0.1.12 19.03.2015
  * @author    ecloud solutions http://www.ecloudsolutions.com <info@ecloudsolutions.com>
- * @copyright Copyright (C) 2010 - 2014 ecloud solutions ®
+ * @copyright Copyright (C) 2010 - 2015 ecloud solutions ®
  */
 ?><?php require_once Mage::getBaseDir('lib') . '/Andreani/wsseAuth.php';
 class Ecloud_Andreani_Model_Observer extends Mage_Core_Model_Session_Abstract {
@@ -70,7 +70,6 @@ class Ecloud_Andreani_Model_Observer extends Mage_Core_Model_Session_Abstract {
 			            'estado'				=> 'Pendiente'
 					));
 			$model = Mage::getModel('andreani/order')->addData($_dataSave);
-Mage::log("Datos a guardar" . print_r($_dataSave,true));
             $model->save();
 
 			} catch (Exception $e) {
@@ -154,7 +153,7 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 						'Localidad' 			=> $datos["localidad"],
 						'NombreApellido' 		=> $datos["nombre"] . " " . $datos["apellido"],
 						'NombreApellidoAlternativo' => NULL,
-						'Numero' 				=> $datos["direccion"],
+						'Numero' 				=> ".",
 						'NumeroCelular' 		=> $datos["telefono"],
 						'NumeroDocumento' 		=> $datos["dni"],
 						'NumeroTelefono' 		=> $datos["telefono"],
@@ -179,24 +178,15 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 			    ->setTitle('Andreani');
 			$shipment->addTrack($track);
 			
-			//Enviamos numero Andreani, nos devolvera el url de la constancia que lo almacenaremos en la tabla andreani_order.
-			$NroAndreani = $phpresponse->ConfirmarCompraResult->NumeroAndreani;
-			$constanciaResponse = $client->ImprimirConstancia(array(
-					'entities' =>array(
-								'ParamImprimirConstancia' =>array(
-										'NumeroAndreani' => $NroAndreani
-									))));
-			$ConstanciaURL = $constanciaResponse->ImprimirConstanciaResult->ResultadoImprimirConstancia->PdfLinkFile;
-			Mage::log("Constancia de entrega URL " . print_r($ConstanciaURL,true));
-
 			$id = intval($datos["id"]);
 			Mage::getModel('andreani/order')->load($id)->setData('cod_tracking',$phpresponse->ConfirmarCompraResult->NumeroAndreani)->save();
 			Mage::getModel('andreani/order')->load($id)->setData('recibo_tracking',$phpresponse->ConfirmarCompraResult->Recibo)->save();
 			Mage::getModel('andreani/order')->load($id)->setData('estado','Enviado')->save();
-			Mage::getModel('andreani/order')->load($id)->setData('constancia',$ConstanciaURL)->save();
 
 		} catch (SoapFault $e) {
 			Mage::log("Error: " . $e);
+			Mage::throwException(Mage::helper('andreani')->__('Algo ha ido mal con la conexión a Andreani. Intente nuevamente. (envío no generado).'));
+
 		}
 
 	}
@@ -209,12 +199,28 @@ Mage::log("Datos a guardar" . print_r($_dataSave,true));
 		// enviamos el mail con el tracking code
 		if($shipment){
 			if(!$shipment->getEmailSent()){
-				$shipment->sendEmail(true);
+				$shipment->sendEmail(true,'');
 				$shipment->setEmailSent(true);
 				$shipment->save();
 			}
 		}
 	}
+
+	/**
+	* Agregar massAction al sales_order
+	*/
+	public function addMassAction($observer) {
+        $block = $observer->getEvent()->getBlock();
+        if(($block instanceof Mage_Adminhtml_Block_Widget_Grid_Massaction || $block instanceof Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction)
+            && $block->getRequest()->getControllerName() == 'sales_order')
+        {
+            $block->addItem('andreani', array(
+                'label' => 'Imponer en Andreani',
+                'url' => $block->getUrl('andreani/adminhtml_orders/impandreani'),
+                'confirm' => Mage::helper('sales')->__('Desea imponer las ordenes en Andreani?')
+            ));
+        }
+    }
 
 }
 ?>
