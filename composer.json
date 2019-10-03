@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Andreani",
+    "name": "OpenMageModuleFostering\/Andreani",
     "type": "magento-module",
     "license": "GNU-General-Public-License-(GPL)",
     "homepage": "",
     "description": "This extension allows you to connect your Magento store to the most important logistics service in Argentina.",
     "authors": [
-    {
-        "name": "Gaspar Mac",
-        "email": "gaspar@ecloudsolutions.com"
-    }
-],
+        {
+            "name": "Gaspar Mac",
+            "email": "gaspar@ecloudsolutions.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
